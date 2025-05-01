@@ -1,7 +1,8 @@
-# 🎧 Project Name
+# 🎧 Hearing and Speech Recognition
 
-Welcome to **Project Name** — a powerful and modern DApp built with React and Web3 technologies! 🚀  
-(📝 Replace this with a short description of your project.)
+Welcome to **Hearing and Speech Aid Recognition** — a powerful and modern DApp built with React and Web3 technologies! 🚀  
+(📝 Patient can fetch ther recod from anywhere in the world.
+only and authorized peroson can add patients record for the Dignosis and Treatment.)
 
 ---
 
