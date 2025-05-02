@@ -7,122 +7,119 @@ const HearingSpeechAid = () => {
   const [contract, setContract] = useState(null);
   const [account, setAccount] = useState(null);
   const [isOwner, setIsOwner] = useState(null);
-  const [providerAddress, setProviderAddress] = useState("");
   const [patientID, setPatientID] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
   const [treatment, setTreatment] = useState("");
   const [patientRecords, setPatientRecords] = useState([]);
-
-  const contractAddress = "0xacb7c632f3e423e8f4828d9cba21608e0ec8145e";
+  const [providerAddress, setProviderAddress] = useState("");
+  const contractAddress = "0x96233fdbf8f4443f59cd4cc906ff772af1475b39";
 
   const contractABI = [
-    [
-      {
-        inputs: [
-          {
-            internalType: "address",
-            name: "provider",
-            type: "address",
-          },
-        ],
-        name: "authorizeProvider",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "patientID",
-            type: "uint256",
-          },
-          {
-            internalType: "string",
-            name: "patientName",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "diagnosis",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "treatment",
-            type: "string",
-          },
-        ],
-        name: "createNewRecord",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      {
-        inputs: [],
-        stateMutability: "nonpayable",
-        type: "constructor",
-      },
-      {
-        inputs: [],
-        name: "getOwner",
-        outputs: [
-          {
-            internalType: "address",
-            name: "",
-            type: "address",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
-      },
-      {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "patientID",
-            type: "uint256",
-          },
-        ],
-        name: "getPaitientRecords",
-        outputs: [
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "recordID",
-                type: "uint256",
-              },
-              {
-                internalType: "string",
-                name: "patientName",
-                type: "string",
-              },
-              {
-                internalType: "string",
-                name: "diagnosis",
-                type: "string",
-              },
-              {
-                internalType: "string",
-                name: "treatment",
-                type: "string",
-              },
-              {
-                internalType: "uint256",
-                name: "timestamp",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct HearingSpeechRecord.Record[]",
-            name: "",
-            type: "tuple[]",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
-      },
-    ],
+    {
+      inputs: [],
+      stateMutability: "nonpayable",
+      type: "constructor",
+    },
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "provider",
+          type: "address",
+        },
+      ],
+      name: "authorizeProvider",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "patientID",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "patientName",
+          type: "string",
+        },
+        {
+          internalType: "string",
+          name: "diagnosis",
+          type: "string",
+        },
+        {
+          internalType: "string",
+          name: "treatment",
+          type: "string",
+        },
+      ],
+      name: "createNewRecord",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "getOwner",
+      outputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "patientID",
+          type: "uint256",
+        },
+      ],
+      name: "getPaitientRecords",
+      outputs: [
+        {
+          components: [
+            {
+              internalType: "uint256",
+              name: "recordID",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "patientName",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "diagnosis",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "treatment",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          internalType: "struct HearingSpeechRecord.Record[]",
+          name: "",
+          type: "tuple[]",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
   ];
 
   useEffect(() => {
@@ -148,6 +145,9 @@ const HearingSpeechAid = () => {
 
         const ownerAddress = await contract.getOwner();
 
+        // 🔍 Add this logging block here:
+        console.log("Contract Owner:", ownerAddress);
+        console.log("Connected Wallet:", accountAddress);
         setIsOwner(accountAddress.toLowerCase() === ownerAddress.toLowerCase());
       } catch (error) {
         console.error("Error connecting to wallet:", error);
@@ -158,7 +158,7 @@ const HearingSpeechAid = () => {
 
   const fetchPatientRecords = async () => {
     try {
-      const records = await contract.getPatientRecords(patientID);
+      const records = await contract.getPatientRecords(Number(patientID));
       console.log(records);
       setPatientRecords(records);
     } catch (error) {
@@ -168,8 +168,8 @@ const HearingSpeechAid = () => {
 
   const addRecord = async () => {
     try {
-      const tx = await contract.addRecord(
-        patientID,
+      const tx = await contract.createNewRecord(
+       Number(patientID),
         "Alice",
         diagnosis,
         treatment
@@ -251,7 +251,6 @@ const HearingSpeechAid = () => {
           Authorize Provider
         </button>
       </div>
-
 
       <div className="record-section">
         <h2>Patient Records</h2>
